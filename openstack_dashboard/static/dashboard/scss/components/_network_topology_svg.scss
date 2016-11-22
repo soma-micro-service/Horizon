@@ -69,6 +69,40 @@
     }
   }
 
+  .pod_small{
+    .frame {
+       fill: url(#device_small_bg);
+       stroke: #339F34;
+       stroke-width: 3;
+    }
+    .port_text {
+      display: none;
+    }
+  }
+
+  .service_small {
+    .frame {
+        fill: url(#device_small_bg);
+        stroke: #339F34;
+        stroke-width: 3;
+    }
+    .port_text {
+      display: none;
+    }
+  }
+
+  .rccontroller_small {
+    .frame {
+        fill: url(#device_small_bg);
+        stroke: #339F34;
+        stroke-width: 3;
+    }
+
+    .port_text {
+        display: none;
+    }
+  }
+
   .router_normal,
   .instance_normal {
     .frame {
@@ -80,6 +114,114 @@
     .icon_bg {
        fill: #fff;
        stroke: $gray-dark;
+       stroke-width: 4;
+     }
+
+    .texts_bg {
+       fill: url('#device_normal_bg');
+     }
+
+    .texts {
+      .name {
+         text-anchor: middle;
+         fill: $gray-dark;
+         font-size: $font-size-base;
+       }
+
+      .type {
+         text-anchor: middle;
+         fill: #fff;
+         font-size: $font-size-base;
+      }
+    }
+
+    .instance_bg {
+       fill: $gray-dark;
+    }
+  }
+
+  .pod_normal {
+    .frame {
+       fill: #00AAA0;
+       stroke: #339F34;
+       stroke-width: 4;
+     }
+
+    .icon_bg {
+       fill: #00AAA0;
+       stroke: #339F34;
+       stroke-width: 4;
+     }
+
+    .texts_bg {
+       fill: url('#device_normal_bg');
+     }
+
+    .texts {
+      .name {
+         text-anchor: middle;
+         fill: $gray-dark;
+         font-size: $font-size-base;
+       }
+
+      .type {
+         text-anchor: middle;
+         fill: #fff;
+         font-size: $font-size-base;
+      }
+    }
+
+    .instance_bg {
+       fill: $gray-dark;
+    }
+  }
+
+  .service_normal {
+    .frame {
+       fill: #8ed2c9;
+       stroke: #339F34;
+       stroke-width: 4;
+     }
+
+    .icon_bg {
+       fill: #8ed2c9;
+       stroke: #339F34;
+       stroke-width: 4;
+     }
+
+    .texts_bg {
+       fill: url('#device_normal_bg');
+     }
+
+    .texts {
+      .name {
+         text-anchor: middle;
+         fill: $gray-dark;
+         font-size: $font-size-base;
+       }
+
+      .type {
+         text-anchor: middle;
+         fill: #fff;
+         font-size: $font-size-base;
+      }
+    }
+
+    .instance_bg {
+       fill: $gray-dark;
+    }
+  }
+
+  .rccontroller_normal {
+    .frame {
+       fill: #FCF4D9;
+       stroke: #339F34;
+       stroke-width: 4;
+     }
+
+    .icon_bg {
+       fill: #FCF4D9;
+       stroke: #339F34;
        stroke-width: 4;
      }
 
@@ -127,9 +269,84 @@
       }
     }
 
+    .pod_small {
+      .frame {
+        stroke: #339F34;
+        fill: url(#device_small_bg_loading);
+      }
+    }
+
+    .service_small {
+      .frame {
+        stroke: #339F34;
+        fill: url(#device_small_bg_loading);
+      }
+    }
+
+    .rccontroller_small {
+      .frame {
+        stroke: #339F34;
+        fill: url(#device_small_bg_loading);
+      }
+    }
+
     .instance_normal {
       .frame {
         stroke: $gray;
+      }
+
+      .name {
+        fill: $gray-light;
+      }
+
+      .texts_bg {
+        fill: url(#device_normal_bg_loading);
+      }
+
+      .icon_bg {
+        stroke: $gray;
+      }
+    }
+
+    .pod_normal {
+      .frame {
+        stroke: #339F34;
+      }
+
+      .name {
+        fill: $gray-light;
+      }
+
+      .texts_bg {
+        fill: url(#device_normal_bg_loading);
+      }
+
+      .icon_bg {
+        stroke: $gray;
+      }
+    }
+
+    .service_normal {
+      .frame {
+        stroke: #339F34;
+      }
+
+      .name {
+        fill: $gray-light;
+      }
+
+      .texts_bg {
+        fill: url(#device_normal_bg_loading);
+      }
+
+      .icon_bg {
+        stroke: $gray;
+      }
+    }
+
+    .rccontroller_normal {
+      .frame {
+        stroke: #339F34;
       }
 
       .name {

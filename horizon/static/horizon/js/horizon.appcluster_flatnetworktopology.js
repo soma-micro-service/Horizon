@@ -1,7 +1,7 @@
 /* global Hogan */
 /* Namespace for core functionality related to Network Topology. */
 
-horizon.flat_network_topology = {
+horizon.appcluster_flat_network_topology = {
   model: null,
   fa_globe_glyph: '\uf0ac',
   fa_globe_glyph_width: 15,
@@ -18,6 +18,18 @@ horizon.flat_network_topology = {
   instance_tmpl: {
     small:'#topology_template > .instance_small',
     normal:'#topology_template > .instance_normal'
+  },
+  pod_tmpl: {
+    small:'#topology_template > .pod_small',
+    normal:'#topology_template > .pod_normal'
+  },
+  rccontroller_tmpl: {
+    small:'#topology_template > .rccontroller_small',
+    normal:'#topology_template > .rccontroller_normal'
+  },
+  service_tmpl: {
+    small:'#topology_template > .service_small',
+    normal:'#topology_template > .service_normal'
   },
   balloon_tmpl : null,
   balloon_device_tmpl : null,
@@ -115,7 +127,7 @@ horizon.flat_network_topology = {
   load_network_info:function(){
     var self = this;
     self.model = horizon.networktopologyloader.model;
-    console.log(self.model);
+    console.log(horizon.networktopologyloader.model);
     self.data_convert();
   },
   select_draw_mode:function() {
@@ -158,15 +170,61 @@ horizon.flat_network_topology = {
     self.select_draw_mode();
     var element_properties = self.element_properties[self.draw_mode];
     self.network_height = element_properties.top_margin;
+
+    //network중 이름이 lb-mgmt-net인건 마지막으로 보냄
+    var tempIndex;
+    $.each(model.networks, function(index,network){
+      if(network.name === "lb-mgmt-net" && (model.networks.length-1 != index)){
+        tempIndex = index;
+      }
+    });
+    if(tempIndex){
+      var tempLbMgmtNet = $.extend({}, model.networks.splice(tempIndex, 1)[0]);
+      model.networks.push(tempLbMgmtNet);
+    }
+
+    $.each(model.ports, function(index,port){
+      if(port.device_owner == 'Octavia:health-mgr'){
+        port.kubernetes = true;
+      }
+    });
+
+    //Pod Init
+    $.each(model.pods, function(index, pod){
+      pod.kubernetes = true;
+      pod.name = pod.metadata.name;
+      pod.id = pod.metadata.uid;
+      // pod.status = pod.status.phase;
+    });
+
+    //Service Init
+    $.each(model.services, function(index, service){
+      service.kubernetes = true;
+      service.name = service.metadata.name;
+      service.id = service.metadata.uid;
+      service.status = "Active";
+    });
+
+    //rccontroller Init
+    $.each(model.replicationController, function(index, rccontroller){
+      rccontroller.kubernetes = true;
+      rccontroller.name = rccontroller.metadata.name;
+      rccontroller.id = rccontroller.metadata.uid;
+      rccontroller.status = "Active";
+    });
+
     $.each([
       {model:model.routers, type:'router'},
-      {model:model.servers, type:'instance'}
+      {model:model.servers, type:'instance'},
+      {model:model.pods, type:'pod'},
+      {model:model.services, type:'service'},
+      {model:model.replicationController, type:'rccontroller'},
     ], function(index, devices) {
       var type = devices.type;
       var model = devices.model;
       $.each(model, function(index, device) {
         device.type = type;
-        device.ports = self.select_port(device.id);
+        device.ports = self.select_port(device.id, device);
         var hasports = device.ports.length > 0;
         device.parent_network = (hasports) ? self.select_main_port(device.ports).network_id : self.model.networks[0].id;
         var height = element_properties.port_margin*(device.ports.length - 1);
@@ -177,9 +235,10 @@ horizon.flat_network_topology = {
         self.network_height += device.height + element_properties.margin;
       });
     });
+
     $.each(model.networks, function(index, network) {
       network.devices = [];
-      $.each([model.routers, model.servers],function(index, devices) {
+      $.each([model.routers, model.servers, model.pods, model.services, model.replicationController],function(index, devices) {
         $.each(devices,function(index, device) {
           if(network.id === device.parent_network) {
             network.devices.push(device);
@@ -187,6 +246,8 @@ horizon.flat_network_topology = {
         });
       });
     });
+    // console.log(model);
+
     self.network_height += element_properties.top_margin;
     self.network_height = (self.network_height > element_properties.network_min_height) ? self.network_height : element_properties.network_min_height;
     self.draw_topology();
@@ -208,7 +269,6 @@ horizon.flat_network_topology = {
 
     var network = svg.selectAll('g.network')
       .data(self.model.networks);
-
     network.enter()
       .append('g')
       .attr('class','network')
@@ -435,8 +495,18 @@ horizon.flat_network_topology = {
   get_network_index: function(network_id) {
     return this.network_index[network_id];
   },
-  select_port: function(device_id){
+  //
+  select_port: function(device_id, device){
     return $.map(this.model.ports,function(port){
+      //device의 name이 kube-minion을 포함하고 있으면... lb-mgmt-net port에 연결
+      if (device.name.includes('kube-minion')){
+        if(port.device_owner == 'Octavia:health-mgr')
+          return port;
+      }else if(device.kubernetes){
+        if(port.device_owner == 'Octavia:health-mgr')
+          return port;
+      }
+
       if (port.device_id === device_id) {
         return port;
       }
@@ -566,7 +636,29 @@ horizon.flat_network_topology = {
       html = balloon_tmpl.render(html_data,{
         table1:device_tmpl
       });
-    } else {
+    }
+    else if (d.type === 'pod') {
+      html_data.delete_label = gettext("Delete pod");
+      html_data.view_details_label = gettext("View Pod Details");
+      html = balloon_tmpl.render(html_data,{
+        table1:device_tmpl
+      });
+    }
+    else if (d.type === 'service') {
+      html_data.delete_label = gettext("Delete service");
+      html_data.view_details_label = gettext("View Service Details");
+      html = balloon_tmpl.render(html_data,{
+        table1:device_tmpl
+      });
+    }
+    else if (d.type === 'rccontroller') {
+      html_data.delete_label = gettext("Delete RC");
+      html_data.view_details_label = gettext("View RC Details");
+      html = balloon_tmpl.render(html_data,{
+        table1:device_tmpl
+      });
+    }
+    else {
       return;
     }
     $(self.svg_container).append(html);

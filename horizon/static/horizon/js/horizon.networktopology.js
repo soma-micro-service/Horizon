@@ -93,6 +93,7 @@ horizon.network_topology = {
     self.data.routers = {};
     self.data.servers = {};
     self.data.ports = {};
+    self.data.pods = {};
 
     // Setup balloon popups
     self.balloonTmpl = Hogan.compile(angular.element('#balloon_container').html());

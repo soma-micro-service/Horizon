@@ -1,0 +1,14 @@
+Person:
+  - Name: test
+    Year: 1977
+    Hobby:
+     - test
+      - test
+      - test
+    Married: test
+    Car: test
+    Notebook: test
+    Child: ["연주", "민호"]
+    Job: test
+
+

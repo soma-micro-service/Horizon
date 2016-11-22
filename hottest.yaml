@@ -1,0 +1,4 @@
+parameters:
+  image: fedora-atomic-latest
+  key_name: superkey
+  network: 28df4f91-67b3-4d56-b4a2-495f121a1e95
