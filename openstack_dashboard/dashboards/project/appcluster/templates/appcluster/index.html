@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n %}
+
 {% block title %}{% trans "App Cluster Topology" %}{% endblock %}
 
 {% block main %}
+
 
 <noscript>
 {% trans "This panel needs JavaScript support." %}
@@ -24,6 +26,10 @@
 <span data-networktopology="{% url 'horizon:project:appcluster:json' %}" id="networktopology"></span>
 <div id="topologyMessages"></div>
 
+
+<script src="{{ STATIC_URL }}dashboard/js/appcluster.js"></script>
+
+
 <script type="text/javascript">
   if (typeof horizon.network_topology !== 'undefined') {
     horizon.network_topology.init();
@@ -35,4 +41,8 @@
     });
   }
 </script>
-{% endblock %}
+
+
+{% endblock main %}
+
+

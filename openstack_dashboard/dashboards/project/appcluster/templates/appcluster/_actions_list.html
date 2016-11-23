@@ -1,8 +1,13 @@
 {% load i18n %}
 
 <div class="launchButtons pull-right">
-      <a href="{% url 'horizon:project:appcluster:add' %}" class="btn btn-default ajax-modal">
-          <span class="fa fa-plus"></span>
-          Create App Cluster
-      </a>
+    <button class="btn btn-default" onclick="changeStats(status)" id="onoffBtn">
+        <span class="fa fa-power-off"></span>
+        Hide App Cluster
+    </button>
+
+    <a href="{% url 'horizon:project:appcluster:add' %}" class="btn btn-default ajax-modal">
+        <span class="fa fa-plus"></span>
+        Create App Cluster
+    </a>
 </div>

@@ -26,7 +26,7 @@
   angular
     .module('horizon.dashboard.project', [
       'horizon.dashboard.project.containers',
-      'horizon.dashboard.project.workflow'
+      'horizon.dashboard.project.workflow',
     ])
     .config(config);
 

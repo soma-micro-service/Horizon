@@ -36,17 +36,14 @@
  <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.35">
      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand">
         <dockerFolder>$WORKSPACE</dockerFolder>
-        <imageTag>172.17.0.4:5000/$JOB_NAME</imageTag>
+        <imageTag>xzvfinet/$JOB_NAME</imageTag>
         <noCache>false</noCache>
         <rm>false</rm>
     </dockerCmd>
 </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
 <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.35">
  <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
-    <dockerRegistryEndpoint plugin="docker-commons@1.5">
-       <url>http://172.17.0.4:5000/v2</url>
-   </dockerRegistryEndpoint>
-   <image>172.17.0.4:5000/$JOB_NAME</image>
+   <image>xzvfinet/$JOB_NAME</image>
    <tag>latest</tag>
    <registry/>
 </dockerCmd>

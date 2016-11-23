@@ -13,7 +13,7 @@ horizon.networktopologyloader = {
   // data for the network topology views
   model: null,
   // timeout length
-  reload_duration: 10000,
+  reload_duration: 1000,
   // timer controlling update intervals
   update_timer: null,
 

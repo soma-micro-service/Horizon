@@ -113,7 +113,7 @@ horizon.appcluster_flat_network_topology = {
     });
 
     $('#networktopology').on('change', function() {
-      self.load_network_info();
+      self.load_network_info(status);
     });
 
     // register for message notifications
@@ -164,6 +164,9 @@ horizon.appcluster_flat_network_topology = {
   data_convert:function() {
     var self = this;
     var model = self.model;
+    console.log(status);
+    var boolStats = (status === "true");
+
     $.each(model.networks, function(index, network) {
       self.network_index[network.id] = index;
     });
@@ -171,47 +174,50 @@ horizon.appcluster_flat_network_topology = {
     var element_properties = self.element_properties[self.draw_mode];
     self.network_height = element_properties.top_margin;
 
-    //network중 이름이 lb-mgmt-net인건 마지막으로 보냄
-    var tempIndex;
-    $.each(model.networks, function(index,network){
-      if(network.name === "lb-mgmt-net" && (model.networks.length-1 != index)){
-        tempIndex = index;
+
+    if(boolStats){
+      //network중 이름이 lb-mgmt-net인건 마지막으로 보냄
+      var tempIndex;
+      $.each(model.networks, function(index,network){
+        if(network.name === "lb-mgmt-net" && (model.networks.length-1 != index)){
+          tempIndex = index;
+        }
+      });
+      if(tempIndex){
+        var tempLbMgmtNet = $.extend({}, model.networks.splice(tempIndex, 1)[0]);
+        model.networks.push(tempLbMgmtNet);
       }
-    });
-    if(tempIndex){
-      var tempLbMgmtNet = $.extend({}, model.networks.splice(tempIndex, 1)[0]);
-      model.networks.push(tempLbMgmtNet);
+
+      $.each(model.ports, function(index,port){
+        if(port.device_owner == 'Octavia:health-mgr'){
+          port.kubernetes = true;
+        }
+      });
+
+      //Pod Init
+      $.each(model.pods, function(index, pod){
+        pod.kubernetes = true;
+        pod.name = pod.metadata.name;
+        pod.id = pod.metadata.uid;
+        // pod.status = pod.status.phase;
+      });
+
+      //Service Init
+      $.each(model.services, function(index, service){
+        service.kubernetes = true;
+        service.name = service.metadata.name;
+        service.id = service.metadata.uid;
+        service.status = "Active";
+      });
+
+      //rccontroller Init
+      $.each(model.replicationController, function(index, rccontroller){
+        rccontroller.kubernetes = true;
+        rccontroller.name = rccontroller.metadata.name;
+        rccontroller.id = rccontroller.metadata.uid;
+        rccontroller.status = "Active";
+      });
     }
-
-    $.each(model.ports, function(index,port){
-      if(port.device_owner == 'Octavia:health-mgr'){
-        port.kubernetes = true;
-      }
-    });
-
-    //Pod Init
-    $.each(model.pods, function(index, pod){
-      pod.kubernetes = true;
-      pod.name = pod.metadata.name;
-      pod.id = pod.metadata.uid;
-      // pod.status = pod.status.phase;
-    });
-
-    //Service Init
-    $.each(model.services, function(index, service){
-      service.kubernetes = true;
-      service.name = service.metadata.name;
-      service.id = service.metadata.uid;
-      service.status = "Active";
-    });
-
-    //rccontroller Init
-    $.each(model.replicationController, function(index, rccontroller){
-      rccontroller.kubernetes = true;
-      rccontroller.name = rccontroller.metadata.name;
-      rccontroller.id = rccontroller.metadata.uid;
-      rccontroller.status = "Active";
-    });
 
     $.each([
       {model:model.routers, type:'router'},
@@ -220,6 +226,11 @@ horizon.appcluster_flat_network_topology = {
       {model:model.services, type:'service'},
       {model:model.replicationController, type:'rccontroller'},
     ], function(index, devices) {
+      if(!boolStats){
+        if(devices.type == 'pod' || devices.type == 'service' || devices.type == 'rccontroller') return;
+      }
+
+
       var type = devices.type;
       var model = devices.model;
       $.each(model, function(index, device) {
@@ -239,6 +250,10 @@ horizon.appcluster_flat_network_topology = {
     $.each(model.networks, function(index, network) {
       network.devices = [];
       $.each([model.routers, model.servers, model.pods, model.services, model.replicationController],function(index, devices) {
+        if(!boolStats){
+          if(devices.type == 'pod' || devices.type == 'service' || devices.type == 'rccontroller') return;
+        }
+
         $.each(devices,function(index, device) {
           if(network.id === device.parent_network) {
             network.devices.push(device);
@@ -499,7 +514,7 @@ horizon.appcluster_flat_network_topology = {
   select_port: function(device_id, device){
     return $.map(this.model.ports,function(port){
       //device의 name이 kube-minion을 포함하고 있으면... lb-mgmt-net port에 연결
-      if (device.name.includes('kube-minion')){
+      if (device.name && device.name.includes('kube-minion') && status === "true"){
         if(port.device_owner == 'Octavia:health-mgr')
           return port;
       }else if(device.kubernetes){

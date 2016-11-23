@@ -402,17 +402,27 @@ class JSONView(View):
     def _get_pods(slef, request):
         try:
             res = pykube.Pod.objects(pykubeapi).filter(namespace="default").execute().json()
+            return res['items']
         except Exception:
             print("ecept")
-        return res['items']
+            return []
+
 
     def _get_services(slef, request):
-        res = pykube.Service.objects(pykubeapi).filter(namespace="default").execute().json()
-        return res['items']
+        try:
+            res = pykube.Service.objects(pykubeapi).filter(namespace="default").execute().json()
+            return res['items']
+        except Exception:
+            print("Error")
+            return []
 
     def _get_replication_controllers(slef, request):
-        res = pykube.ReplicationController.objects(pykubeapi).filter(namespace="default").execute().json()
-        return res['items']
+        try:
+            res = pykube.ReplicationController.objects(pykubeapi).filter(namespace="default").execute().json()
+            return res['items']
+        except Exception:
+            print("Error")
+            return []
 
     def get(self, request, *args, **kwargs):
         networks = self._get_networks(request)
