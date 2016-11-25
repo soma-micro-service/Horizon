@@ -22,6 +22,7 @@ from openstack_dashboard.dashboards.project.appcluster import views
 
 urlpatterns = [
     url(r'^$', views.NetworkTopologyView.as_view(), name='index'),
+    #url(r'^appdetail$', views.AppDetailView.as_view(), name='appdetail'),
     url(r'^router$', views.RouterView.as_view(), name='router'),
     url(r'^add', views.CreateClusterView.as_view(), name='add'),
     url(r'^network$', views.NetworkView.as_view(), name='network'),

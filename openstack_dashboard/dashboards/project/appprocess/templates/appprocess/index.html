@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "App Process" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("App Process") %}
+{% endblock page_header %}
+
+{% block main %}
+<div>
+      <div>
+          <div class="col-md-12 col-md-offset-0 text-center outline space">
+            <div class="col-sm-2 col-md-2 outline" >
+                  <a href="{% url 'horizon:project:appdetail:index' %}" class="btn btn-circle page-scroll btn-lg outline">
+                      <i class="fa fa-code fa-5x fa-spin" id="code"></i>
+                  </a>
+                  <p class="outline">
+                      Code CheckIn
+                  </p>
+              </div>
+              <div class="col-sm-2 col-md-2 outline">
+                  <a href="{% url 'horizon:project:appdetail:index' %}" class="btn btn-circle page-scroll btn-lg outline">
+                      <i class="fa fa-cube fa-5x" id="build"></i>
+                  </a>
+                  <p class="outline">
+                      Build
+                  </p>
+              </div>
+              <div class="col-sm-2 col-md-2 outline">
+                  <a href="{% url 'horizon:project:appdetail:index' %}" class="btn btn-circle page-scroll btn-lg outline">
+                      <i class="fa fa-flask fa-5x" id="test"></i>
+                  </a>
+                  <p class="outline">
+                      Test
+                  </p>
+              </div>
+              <div class="col-sm-2 col-md-2 outline">
+                  <a href="{% url 'horizon:project:appdetail:index' %}" class="btn btn-circle page-scroll btn-lg outline">
+                      <i class="fa fa-gears fa-5x" id="provisioning"></i>
+                  </a>
+                  <p class="outline">
+                      Provisioning
+                  </p>
+              </div>
+              <div class="col-sm-2 col-md-2 outline">
+                  <a href="" class="btn btn-circle page-scroll btn-lg outline">
+                      <i class="fa fa-rocket fa-5x" id="running"></i>
+                  </a>
+                  <p class="outline">
+                      Running
+                  </p>
+              </div>
+          </div>
+      </div>
+  </div>
+<div>
+  <!--
+  <img src="{{STATIC_URL}}dashboard/img/code.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/right.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/build.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/right.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/provision.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/right.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/test.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/right.png" class="process"/>
+  <img src="{{STATIC_URL}}dashboard/img/running.png" class="process"/>
+  -->
+</div>
+<script src="{{ STATIC_URL }}dashboard/js/appprocess.js"></script>
+{% endblock %}
+
+

@@ -22,6 +22,7 @@ import horizon
 
 
 class NetworkTopology(horizon.Panel):
-    name = _("Cluster")
+    name = _("App Cluster")
     slug = 'appcluster'
     permissions = ('openstack.services.network', )
+

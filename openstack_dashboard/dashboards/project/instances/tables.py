@@ -1223,6 +1223,7 @@ class InstancesTable(tables.DataTable):
                        attrs={'data-type': "ip"})
     size = tables.Column(get_size, sortable=False, verbose_name=_("Size"))
     keypair = tables.Column(get_keyname, verbose_name=_("Key Pair"))
+    print(get_keyname)
     status = tables.Column("status",
                            filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),

@@ -8,3 +8,10 @@ PANEL_GROUP = 'appcluster'
 # Python panel class of the PANEL to be added.
 ADD_PANEL = ('openstack_dashboard.dashboards.project.'
              'appcluster.panel.NetworkTopology')
+
+'''
+# Python panel class of the PANEL to be added.
+ADD_PANEL = ('openstack_dashboard.dashboards.project.'
+             'appdetail.panel.Appdetail')
+'''
+

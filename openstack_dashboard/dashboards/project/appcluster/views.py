@@ -82,6 +82,7 @@ from openstack_dashboard.dashboards.project.routers import\
 from openstack_dashboard.dashboards.project.appcluster import utils
 
 from openstack_dashboard.dashboards.project.appcluster.workflows.create_cluster import CreateCluster
+from openstack_dashboard.dashboards.project.appdetail import views as d_views
 
 import operator
 import pykube
@@ -196,6 +197,10 @@ class RouterView(r_views.IndexView):
 class NetworkView(n_views.IndexView):
     table_class = networks_tables.NetworksTable
     template_name = 'project/appcluster/iframe.html'
+
+class AppDetailView(d_views.IndexView):
+    #table_class = networks_tables.NetworksTable
+    template_name = 'project/appdetail/index.html'
 
 
 class RouterDetailView(r_views.DetailView):
@@ -402,26 +407,34 @@ class JSONView(View):
     def _get_pods(slef, request):
         try:
             res = pykube.Pod.objects(pykubeapi).filter(namespace="default").execute().json()
-            return res['items']
-        except Exception:
-            print("ecept")
+            print("==============================getPods========================")
+            print(res)
+            if res:
+                return res['items']
+        except Exception, e:
+            print("==============================getPods Exception========================")
+            print(e)
             return []
 
 
     def _get_services(slef, request):
         try:
             res = pykube.Service.objects(pykubeapi).filter(namespace="default").execute().json()
-            return res['items']
-        except Exception:
-            print("Error")
+            if res:
+                return res['items']
+        except Exception, e:
+            print("==============================getService Exception========================")
+            print(e)
             return []
 
     def _get_replication_controllers(slef, request):
         try:
             res = pykube.ReplicationController.objects(pykubeapi).filter(namespace="default").execute().json()
-            return res['items']
-        except Exception:
-            print("Error")
+            if res:
+                return res['items']
+        except Exception, e:
+            print("==============================rccontroller Exception========================")
+            print(e)
             return []
 
     def get(self, request, *args, **kwargs):

@@ -82,7 +82,7 @@ class CreateCluster(workflows.Workflow):
     finalize_button_name = _("Add")
     success_message = _('Created app cluster "%s".')
     failure_message = _('Unable to create App cluster "%s".')
-    success_url = "horizon:project:appcluster:index"
+    success_url = "horizon:project:appprocess:index"
     failure_url = "horizon:project:appcluster:index"
     default_steps = (SetCreateClusterDetails,)
 

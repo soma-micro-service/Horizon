@@ -199,7 +199,6 @@ horizon.appcluster_flat_network_topology = {
         pod.kubernetes = true;
         pod.name = pod.metadata.name;
         pod.id = pod.metadata.uid;
-        // pod.status = pod.status.phase;
       });
 
       //Service Init
@@ -207,7 +206,7 @@ horizon.appcluster_flat_network_topology = {
         service.kubernetes = true;
         service.name = service.metadata.name;
         service.id = service.metadata.uid;
-        service.status = "Active";
+        // service.status = "Active";
       });
 
       //rccontroller Init
@@ -215,7 +214,7 @@ horizon.appcluster_flat_network_topology = {
         rccontroller.kubernetes = true;
         rccontroller.name = rccontroller.metadata.name;
         rccontroller.id = rccontroller.metadata.uid;
-        rccontroller.status = "Active";
+        // rccontroller.status = "Active";
       });
     }
 
