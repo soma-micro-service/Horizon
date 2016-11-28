@@ -12,7 +12,7 @@
           <div class="col-md-12 col-md-offset-0 text-center outline space">
             <div class="col-sm-2 col-md-2 outline" >
                   <a href="{% url 'horizon:project:appdetail:index' %}" class="btn btn-circle page-scroll btn-lg outline">
-                      <i class="fa fa-code fa-5x fa-spin" id="code"></i>
+                      <i class="fa fa-code fa-5x" id="code"></i>
                   </a>
                   <p class="outline">
                       Code CheckIn
@@ -33,6 +33,7 @@
                   <p class="outline">
                       Test
                   </p>
+                  <p id="result" style="color:red; font-weight: 500; margin-top: 100px"></p>
               </div>
               <div class="col-sm-2 col-md-2 outline">
                   <a href="{% url 'horizon:project:appdetail:index' %}" class="btn btn-circle page-scroll btn-lg outline">
@@ -43,7 +44,7 @@
                   </p>
               </div>
               <div class="col-sm-2 col-md-2 outline">
-                  <a href="" class="btn btn-circle page-scroll btn-lg outline">
+                  <a href="{% url 'horizon:project:appdetail:index' %}" class="btn btn-circle page-scroll btn-lg outline">
                       <i class="fa fa-rocket fa-5x" id="running"></i>
                   </a>
                   <p class="outline">
@@ -52,6 +53,8 @@
               </div>
           </div>
       </div>
+
+
   </div>
 <div>
   <!--

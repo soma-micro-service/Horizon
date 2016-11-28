@@ -4,7 +4,6 @@
 
 var status = true;
 
-
 function changeStats(inputStats){
     var boolStats = (inputStats === "true");
     console.log("click bool is" + boolStats);
@@ -15,6 +14,8 @@ function changeStats(inputStats){
         document.getElementById('onoffBtn').innerHTML =
             "<span class='fa fa-power-off'></span> Hide App Cluster";
     }
+
+    console.log(status);
 
     status = !boolStats;
 }

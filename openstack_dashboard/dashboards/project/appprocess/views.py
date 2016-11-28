@@ -17,11 +17,15 @@ from horizon.utils.lazy_encoder import LazyTranslationEncoder
 import pykube
 import requests
 import json
+import urlparse
+import time
+
+#pykube api
+pykubeapi = pykube.HTTPClient(pykube.KubeConfig.from_file("~/.kube/config"))
 
 class IndexView(views.APIView):
     # A very simple class-based view...
     template_name = 'project/appprocess/index.html'
-    asdasd = "asdsad"
     def get_data(self, request, context, *args, **kwargs):
         # Add data to the context here...
         # jenkins, pykube, magnum info pass
@@ -31,11 +35,39 @@ class IndexView(views.APIView):
 
 class JSONView(View):
     def get(self, request, *args, **kwargs):
-        r = requests.get('http://172.16.100.55:6680/job/hajin/lastBuild/api/json')
+        phase = 1  # Checkin, Build, Test, Provisioning, run
+        jenkinsUrl = 'http://172.16.100.55:6680/job/app/lastBuild/consoleText'
+        print("======================")
+        print(jenkinsUrl)
+        print("======================")
+        jenkins = requests.get(jenkinsUrl).text
+        pods = pykube.Pod.objects(pykubeapi).filter(namespace="default").execute().json()['items']
+        podAllStatus = True
+
+        if '[Docker] INFO: Creating docker image from' in jenkins:
+            phase = 2
+            if 'Done pushing image' in jenkins:
+                phase = 3
+                for pod in pods:
+                    if pod['status']['phase'] != 'Running':
+                        podAllStatus = False
+                if podAllStatus == False:
+                    phase = 4
+                else:
+                    phase = 5
+
+        if 'Finished: FAILURE' in jenkins:
+            phase = 6
+
+
+
+
+
 
         data = {
-            'jenkins': r.json(),
-            'networks': 'asd',
+            'jenkins': jenkins,
+            'pods': pods,
+            'phase': phase
         }
 
         json_string = json.dumps(data, cls=LazyTranslationEncoder,

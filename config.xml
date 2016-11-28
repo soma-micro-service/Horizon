@@ -43,19 +43,72 @@
 </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
 <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.35">
  <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
+   <dockerRegistryEndpoint plugin="docker-commons@1.5">
+<url>https://hub.docker.com/</url>
+	<credentialsId>22831fe6-357a-4154-8acf-e582aea2b2d4</credentialsId>
+   </dockerRegistryEndpoint>
    <image>xzvfinet/$JOB_NAME</image>
    <tag>latest</tag>
    <registry/>
 </dockerCmd>
 </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-<org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.35">
- <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveCommand">
-    <containerIds></containerIds>
-    <ignoreIfNotFound>true</ignoreIfNotFound>
-    <removeVolumes>false</removeVolumes>
-    <force>true</force>
-</dockerCmd>
-</org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+<hudson.tasks.Shell>
+    <command>curl -X POST \
+-H "Content-Type: application/json" \
+-H "X-Auth-Token:`curl -s -X POST http://192.168.0.11:5000/v2.0/tokens -H "Content-Type: application/json" -d '{"auth": {"tenantName": "'admin'", "passwordCredentials": {"username": "'admin'", "password": "'secret'"}}}' | python -m json.tool | python -c "import sys, json; print json.load(sys.stdin)['access']['token']['id']"`" \
+-d '{
+  "files": {},
+  "disable_rollback": true,
+  "parameters": {
+    "app_cluster_name": "app",
+    "service_name": "merong-2-service",
+    "service_docker_repo": "xzvfinet/app",
+    "service_port": 8000
+  },
+  "stack_name": "app",
+  "template": {
+    "heat_template_version": "2014-10-16",
+    "description": "Deploy Ubuntu Trusty by Cloud Image\n",
+    "parameters": {
+      "app_cluster_name": {
+        "type": "string"
+      },
+      "service_name": {
+        "type": "string"
+      },
+      "service_docker_repo": {
+        "type": "string"
+      },
+      "service_port": {
+        "type": "string"
+      }
+    },
+    "resources": {
+      "appcluster": {
+        "type": "OS::Astro::AppCluster",
+        "properties": {
+          "name": {
+            "get_param": "app_cluster_name"
+          },
+          "services": [
+            {
+              "service_name": {
+                "get_param": "service_name"
+              },
+              "docker_image_url": {
+                "get_param": "service_docker_repo"
+              },
+              "port": {
+                "get_param": "service_port"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}' "http://192.168.0.11:8004/v1/demo/stacks"</command>
+</hudson.tasks.Shell>
 </builders>
 <publishers/>
 <buildWrappers>

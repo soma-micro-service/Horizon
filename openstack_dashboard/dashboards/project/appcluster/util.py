@@ -13,6 +13,7 @@ import yaml
 import os
 import xml.etree.ElementTree as ET
 from os.path import expanduser
+import subprocess
 
 requests.packages.urllib3.disable_warnings()
 
@@ -73,28 +74,38 @@ def create_appCluster(self, request, context):
         root = doc.getroot()
         scm_tag = root.find("scm")
         builders_tag = root.find("builders")
-        jenkins_tag = builders_tag.findall("org.jenkinsci.plugins.dockerbuildstep.DockerBuilder")[2]
+        task_shell_tag = builders_tag.find("hudson.tasks.Shell")
+        command_tag = task_shell_tag.find("command")
 
         #example) https://github.com/soma-micro-service/simple_django.git
         for url in scm_tag.iter("url"):
             url.text = str(git)
-            #print("=========")
 
         #example) cp ~/Dockerfiles/python/Dockerfile $WORKSPACE/
         #example) cp ~/Dockerfiles/node/Dockerfile $WORKSPACE/
-        for command in builders_tag.iter("command"):
-            if str(languagePack) == "django":
-                command.text = "cp ~/Dockerfiles/django/Dockerfile $WORKSPACE/"
-            else:
-                command.text = "cp ~/Dockerfiles/node/Dockerfile $WORKSPACE/"
 
-        #example) simple-django-app
-        for containerIds in jenkins_tag.iter("containerIds"):
-            containerIds.text = str(name)
-            #print(containerIds.text)
+        if str(languagePack) == "django":
+            command_tag.text = "cp /var/jenkins_home/langpack/python/* $WORKSPACE/"
+        else:
+            command_tag.text = "cp /var/jenkins_home/langpack/node/* $WORKSPACE/"
 
         home = expanduser("~")
-        doc.write(str(home) + "/ansible-vm1/files/config.xml", encoding="utf-8")
+        doc.write(str(home) + "/ansible-vm1/files/create.xml", encoding="utf-8")
+
+        f = open("/home/micros/ansible-vm1/group_vars/all", "r")
+        lines = f.readlines()
+        f.close()
+
+        f = open("/home/micros/ansible-vm1/group_vars/all", "w")
+        for line in lines:
+            if "project_id:" not in line:
+                f.write(line)
+            else:
+                f.write('project_id: ' + 'app' + '\n')
+        f.close()
+
+        p = subprocess.Popen(['ansible-playbook', '-i', 'hosts', 'test.yml'], cwd='/home/micros/ansible-vm1')
+        #p.wait()
 
         '''
         fh = open('example.yaml', 'r')
@@ -110,6 +121,7 @@ def create_appCluster(self, request, context):
         return []
 # request - horizon environment settings
 # context - user inputs from form
+'''
 def addProvider(self, request, context):
     try:
 
@@ -183,3 +195,6 @@ def getProviderActions(self):
         exceptions.handle(self.request,
                           _('Unable to retrieve list of posts.'))
         return []
+'''
+
+

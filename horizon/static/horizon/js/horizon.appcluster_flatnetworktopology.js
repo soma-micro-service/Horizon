@@ -167,27 +167,33 @@ horizon.appcluster_flat_network_topology = {
     console.log(status);
     var boolStats = (status === "true");
 
+    if(boolStats) {
+      //network중 이름이 lb-mgmt-net인건 마지막으로 보냄
+      /*
+      var tempIndex;
+      $.each(model.networks, function (index, network) {
+        if (network.name === "lb-mgmt-net" && (model.networks.length - 1 != index)) {
+          tempIndex = index;
+        }
+      });
+      if (tempIndex) {
+        var tempLbMgmtNet = $.extend({}, model.networks.splice(tempIndex, 1)[0]);
+        model.networks.push(tempLbMgmtNet);
+      }
+      */
+    }
+
+
     $.each(model.networks, function(index, network) {
       self.network_index[network.id] = index;
     });
+
     self.select_draw_mode();
     var element_properties = self.element_properties[self.draw_mode];
     self.network_height = element_properties.top_margin;
 
 
     if(boolStats){
-      //network중 이름이 lb-mgmt-net인건 마지막으로 보냄
-      var tempIndex;
-      $.each(model.networks, function(index,network){
-        if(network.name === "lb-mgmt-net" && (model.networks.length-1 != index)){
-          tempIndex = index;
-        }
-      });
-      if(tempIndex){
-        var tempLbMgmtNet = $.extend({}, model.networks.splice(tempIndex, 1)[0]);
-        model.networks.push(tempLbMgmtNet);
-      }
-
       $.each(model.ports, function(index,port){
         if(port.device_owner == 'Octavia:health-mgr'){
           port.kubernetes = true;
@@ -206,7 +212,7 @@ horizon.appcluster_flat_network_topology = {
         service.kubernetes = true;
         service.name = service.metadata.name;
         service.id = service.metadata.uid;
-        // service.status = "Active";
+        service.status = "Active";
       });
 
       //rccontroller Init
@@ -214,7 +220,7 @@ horizon.appcluster_flat_network_topology = {
         rccontroller.kubernetes = true;
         rccontroller.name = rccontroller.metadata.name;
         rccontroller.id = rccontroller.metadata.uid;
-        // rccontroller.status = "Active";
+        rccontroller.status = "Active";
       });
     }
 
